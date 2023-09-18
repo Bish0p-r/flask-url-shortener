@@ -1,4 +1,5 @@
 from flask import flash, redirect, render_template, url_for, abort
+from flask_login import current_user
 
 from app.shortener import shortener_bp as bp
 from app.shortener.models import Url
@@ -19,8 +20,8 @@ def index():
 
         shorted_url = url_for('shortener.url_redirect', short_url=url.short_url, _external=True)
 
-        return render_template('shortener/index.html', form=form, shorted_url=shorted_url)
-    return render_template('shortener/index.html', form=form)
+        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=current_user)
+    return render_template('shortener/index.html', form=form, user=current_user)
 
 
 @bp.route('/<short_url>')
@@ -36,7 +37,7 @@ def url_redirect(short_url):
 def redirect_checker():
     form = UrlForm()
 
-    return render_template('shortener/redirect_checker.html', form=form)
+    return render_template('shortener/redirect_checker.html', form=form, user=current_user)
 
 
 
