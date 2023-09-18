@@ -1,8 +1,9 @@
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template, url_for, abort
 
 from app.shortener import shortener_bp as bp
 from app.shortener.models import Url
 from app.shortener.forms import UrlForm
+from app import db
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -10,15 +11,32 @@ def index():
     form = UrlForm()
 
     if form.validate_on_submit():
-        url = form.url.data
-        # url = Url.create(url)
+        original_url = form.url.data
+        url = Url(original_url=original_url)
 
-        # flash(f'Shortened URL: {url.short_url}', 'success')
-        return render_template('index.html', form=form)
+        db.session.add(url)
+        db.session.commit()
 
-    return render_template('index.html', form=form)
+        shorted_url = url_for('shortener.url_redirect', short_url=url.short_url, _external=True)
+
+        return render_template('shortener/index.html', form=form, shorted_url=shorted_url)
+    return render_template('shortener/index.html', form=form)
 
 
-@bp.route('/about')
-def about():
-    return "123"
+@bp.route('/<short_url>')
+def url_redirect(short_url):
+    # pLTalw
+    url = Url.query.filter_by(short_url=short_url).first()
+    if url:
+        return redirect(url.original_url)
+    abort(404)
+
+
+@bp.route('/redirect_checker', methods=['GET', 'POST'])
+def redirect_checker():
+    form = UrlForm()
+
+    return render_template('shortener/redirect_checker.html', form=form)
+
+
+

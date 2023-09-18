@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, URLField
+from wtforms import SubmitField, URLField, StringField
 from wtforms.validators import URL, Length
 
 
 class UrlForm(FlaskForm):
-    url = URLField('URL', validators=[URL(), Length(max=512)])
-    submit = SubmitField('Shorten')
+    url = URLField(label="", validators=[URL(), Length(max=512)], render_kw={'placeholder': "Enter your URL"})
+    submit = SubmitField('SUBMIT')

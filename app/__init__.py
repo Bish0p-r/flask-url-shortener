@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
 
 from config import Config
+from app.utils import register_handlers
 
 
 db = SQLAlchemy()
@@ -19,6 +20,9 @@ def create_app(config=Config):
     migrate.init_app(app, db, render_as_batch=True)
 
     bootstrap.init_app(app)
+
+    app.app_context().push()
+    register_handlers(app)
 
     from app.shortener import shortener_bp
     from app.user import user_bp

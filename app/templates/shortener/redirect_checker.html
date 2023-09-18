@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_form, render_form_row, render_field %}
 
 {% block content %}
     <div class="container">
       <div class="row">
         <div class="col-md-6 mx-auto text-center">
-          <h1 class="m-lg-5">URL SHORTENER</h1>
-          <p>test test test test test test test test test test </p>
+          <h1 class="m-lg-5">REDIRECT CHECKER</h1>
+          <p>You can log in to your account to save the created links in your profile.</p>
             {{ render_form(form) }}
         </div>
       </div>
     </div>
-
-
 {% endblock content %}
