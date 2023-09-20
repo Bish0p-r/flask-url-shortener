@@ -13,6 +13,9 @@ class Url(db.Model):
     visits = db.Column(db.Integer, default=0)
     active = db.Column(db.Boolean, default=True)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    relationships = db.relationship('User', backref='urls')
+
     def __repr__(self):
         return f"<Url: {self.id}>"
 

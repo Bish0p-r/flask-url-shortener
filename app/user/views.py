@@ -24,7 +24,6 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        print(current_user)
         user = User.query.filter_by(email=form.email.data).first()
         login_user(user)
 

@@ -10,18 +10,22 @@ from app import db
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     form = UrlForm()
+    user = current_user
 
     if form.validate_on_submit():
         original_url = form.url.data
         url = Url(original_url=original_url)
+
+        if user.is_authenticated:
+            user.urls.append(url)
 
         db.session.add(url)
         db.session.commit()
 
         shorted_url = url_for('shortener.url_redirect', short_url=url.short_url, _external=True)
 
-        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=current_user)
-    return render_template('shortener/index.html', form=form, user=current_user)
+        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user)
+    return render_template('shortener/index.html', form=form, user=user)
 
 
 @bp.route('/<short_url>')

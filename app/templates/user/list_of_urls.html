@@ -23,38 +23,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>#11111</td>
-                            <td>06/15/2021</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>12</td>
-                            <td><span class="badge bg-danger text-dark">Inactive</span></td>
-                        </tr>
-                        <tr>
-                            <td>#11111</td>
-                            <td>06/15/2021</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>12</td>
-                            <td><span class="badge bg-success">Active</span></td>
-                        </tr>
-                        <tr>
-                            <td>#11111</td>
-                            <td>06/15/2021</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>12</td>
-                            <td><span class="badge bg-success">Active</span></td>
-                        </tr>
-                        <tr>
-                            <td>#11111</td>
-                            <td>06/15/2021</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>http://127.0.0.1:5000/user/list_of_urls</td>
-                            <td>12</td>
-                            <td><span class="badge bg-success">Active</span></td>
-                        </tr>
+                        {% if user.urls %}
+                            {% for url in user.urls %}
+                                <tr>
+                                    <td>#{{ url.id }}</td>
+                                    <td>{{ url.created_at }}</td>
+                                    <td>{{ url.original_url }}</td>
+                                    <td>{{ url.short_url }}</td>
+                                    <td>{{ url.visits }}</td>
+                                    {% if url.active %}
+                                        <td><span class="badge bg-success text-dark">Active</span></td>
+                                    {% else %}
+                                        <td><span class="badge bg-danger text-dark">Inactive</span></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
