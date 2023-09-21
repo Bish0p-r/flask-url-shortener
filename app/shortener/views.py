@@ -5,6 +5,7 @@ from app.shortener import shortener_bp as bp
 from app.shortener.models import Url
 from app.shortener.forms import UrlForm
 from app import db
+from config import host
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -22,17 +23,22 @@ def index():
         db.session.add(url)
         db.session.commit()
 
-        shorted_url = url_for('shortener.url_redirect', short_url=url.short_url, _external=True)
+        shorted_url = url.short_url
+        print(shorted_url)
 
-        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user)
-    return render_template('shortener/index.html', form=form, user=user)
+        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, selected_url='US')
+    return render_template('shortener/index.html', form=form, user=user, selected_url='US')
 
 
 @bp.route('/<short_url>')
 def url_redirect(short_url):
-    # pLTalw
-    url = Url.query.filter_by(short_url=short_url).first()
+    short_url = host + '/' + short_url
+    url = Url.query.filter_by(short_url=short_url, active=True).first()
+
     if url:
+        url.visits += 1
+        db.session.commit()
+
         return redirect(url.original_url)
     abort(404)
 
@@ -41,7 +47,4 @@ def url_redirect(short_url):
 def redirect_checker():
     form = UrlForm()
 
-    return render_template('shortener/redirect_checker.html', form=form, user=current_user)
-
-
-
+    return render_template('shortener/redirect_checker.html', form=form, user=current_user, selected_url='RC')

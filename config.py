@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
+host = 'http://127.0.0.1:5000'
 
 
 class Config:
