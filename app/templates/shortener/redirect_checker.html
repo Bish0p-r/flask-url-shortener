@@ -8,6 +8,11 @@
           <h1 class="m-lg-5">REDIRECT CHECKER</h1>
           <p>You can log in to your account to save the created links in your profile.</p>
             {{ render_form(form) }}
+            {% if redirect_to %}
+                <div class="alert alert-success mt-4" role="alert">
+                    This link redirects to: {{ redirect_to }}
+                </div>
+            {% endif %}
         </div>
       </div>
     </div>

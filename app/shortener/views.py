@@ -1,3 +1,5 @@
+import requests
+
 from flask import flash, redirect, render_template, url_for, abort
 from flask_login import current_user
 
@@ -46,5 +48,21 @@ def url_redirect(short_url):
 @bp.route('/redirect_checker', methods=['GET', 'POST'])
 def redirect_checker():
     form = UrlForm()
+    redirect_to = None
 
-    return render_template('shortener/redirect_checker.html', form=form, user=current_user, selected_url='RC')
+    if form.validate_on_submit():
+        url = form.url.data
+        response = requests.get(url, allow_redirects=False)
+
+        if response.status_code == 301 or response.status_code == 302:
+            redirect_to = response.next.url
+        else:
+            redirect_to = url
+
+    return render_template(
+        'shortener/redirect_checker.html',
+        form=form,
+        user=current_user,
+        selected_url='RC',
+        redirect_to=redirect_to
+    )
