@@ -56,3 +56,22 @@ class RegisterForm(FlaskForm):
     def validate_email(self, email):
         if User.query.filter_by(email=email.data).first():
             raise ValidationError("This e-mail address is already taken")
+
+
+class ProfileForm(FlaskForm):
+    email = EmailField(
+        label="Email",
+        validators=[Email(), Length(max=128)],
+        render_kw={'placeholder': "Email"}
+    )
+    first_name = StringField(
+        label="First name",
+        validators=[Length(max=64)],
+        render_kw={'placeholder': "First name"}
+    )
+    last_name = StringField(
+        label="Last name",
+        validators=[Length(max=64)],
+        render_kw={'placeholder': "Last name"}
+    )
+    submit = SubmitField('Save changes')

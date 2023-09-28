@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}URL list{% endblock %}
+
 {% block content %}
     <div class="container-xl px-4 mt-4">
         <nav class="nav nav-borders">
@@ -24,28 +26,39 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% if user.urls %}
-                            {% for url in urls %}
-                                <tr>
-                                    <td>#{{ url.id }}</td>
-                                    <td>{{ url.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                                    <td><a href="{{ url.original_url }}">{{ url.original_url|truncate(44) }}</a></td>
-                                    <td><a href="{{ url.short_url }}">{{ url.short_url }}</a></td>
-                                    <td>{{ url.visits }}</td>
-                                    {% if url.active %}
-                                        <td><span class="badge bg-success text-dark">Active</span></td>
-                                        <td><a href="{{ url_for('user.set_link_status', id=url.id)  }}">Deactivate</a></td>
-                                    {% else %}
-                                        <td><span class="badge bg-danger text-dark">Inactive</span></td>
-                                        <td><a href="{{ url_for('user.set_link_status', id=url.id)  }}">Activate</a></td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        {% endif %}
+                        {% for url in pages.items %}
+                            <tr>
+                                <td>#{{ url.id }}</td>
+                                <td>{{ url.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td><a href="{{ url.original_url }}">{{ url.original_url|truncate(44) }}</a></td>
+                                <td><a href="{{ url.short_url }}">{{ url.short_url }}</a></td>
+                                <td>{{ url.visits }}</td>
+                                {% if url.active %}
+                                    <td><span class="badge bg-success text-dark">Active</span></td>
+                                    <td><a href="{{ url_for('user.set_link_status', id=url.id)  }}">Deactivate</a></td>
+                                {% else %}
+                                    <td><span class="badge bg-danger text-dark">Inactive</span></td>
+                                    <td><a href="{{ url_for('user.set_link_status', id=url.id)  }}">Activate</a></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item {% if not pages.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ pages.prev_num }}">Previous</a>
+                </li>
+                {% for page in pages.iter_pages() %}
+                    <li class="page-item {% if page == pages.page %}active{% endif %}"><a class="page-link" href="?page={{ page}}">{{ page }}</a></li>
+                {% endfor %}
+                <li class="page-item {% if not pages.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ pages.next_num }}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 {% endblock content %}

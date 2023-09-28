@@ -14,6 +14,7 @@ from config import host
 def index():
     form = UrlForm()
     user = current_user
+    shorted_url = None
 
     if form.validate_on_submit():
         original_url = form.url.data
@@ -26,10 +27,7 @@ def index():
         db.session.commit()
 
         shorted_url = url.short_url
-        print(shorted_url)
-
-        return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, selected_url='US')
-    return render_template('shortener/index.html', form=form, user=user, selected_url='US')
+    return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, selected_url='index')
 
 
 @bp.route('/<short_url>')
@@ -52,17 +50,23 @@ def redirect_checker():
 
     if form.validate_on_submit():
         url = form.url.data
-        response = requests.get(url, allow_redirects=False)
 
-        if response.status_code == 301 or response.status_code == 302:
-            redirect_to = response.next.url
+        if url.startswith(host):
+            q = Url.query.filter_by(short_url=url, active=True).first()
+            if q:
+                redirect_to = q.original_url
         else:
-            redirect_to = url
+            response = requests.get(url, allow_redirects=False)
+
+            if response.status_code == 301 or response.status_code == 302:
+                redirect_to = response.next.url
+            else:
+                redirect_to = url
 
     return render_template(
         'shortener/redirect_checker.html',
         form=form,
         user=current_user,
-        selected_url='RC',
+        selected_url='redirect_checker',
         redirect_to=redirect_to
     )

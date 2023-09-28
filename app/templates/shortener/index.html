@@ -1,19 +1,23 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form, render_form_row, render_field %}
 
+{% block title %}URL Shortener{% endblock %}
+
 {% block content %}
     <div class="container">
-      <div class="row">
-        <div class="col-md-6 mx-auto text-center">
-          <h1 class="m-lg-5">URL SHORTENER</h1>
-          <p>You can log in to your account to save the created links in your profile.</p>
-            {{ render_form(form) }}
-            {% if shorted_url %}
-                <div class="alert alert-success mt-4" role="alert">
-                    Your shorted url: {{ shorted_url }}
-                </div>
-            {% endif %}
+        <div class="row">
+            <div class="col-md-6 mx-auto text-center">
+                <h1 class="m-lg-5">URL SHORTENER</h1>
+                {% if user.is_anonymous %}
+                    <p>You can log in to your account to save the created links in your profile.</p>
+                {% endif %}
+                {{ render_form(form) }}
+                {% if shorted_url %}
+                    <div class="alert alert-success mt-4" role="alert">
+                        Your shorted url: {{ shorted_url }}
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      </div>
     </div>
 {% endblock content %}
