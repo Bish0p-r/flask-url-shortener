@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, URLField, StringField, EmailField, PasswordField, ValidationError
-from wtforms.validators import URL, Length, Email, InputRequired
+from wtforms import SubmitField, StringField, EmailField, PasswordField, ValidationError
+from wtforms.validators import Length, Email, InputRequired
 from werkzeug.security import check_password_hash
 
 from app.user.models import User
@@ -17,7 +17,7 @@ class LoginForm(FlaskForm):
         validators=[Length(max=256), InputRequired()],
         render_kw={'placeholder': "Password"}
     )
-    submit = SubmitField('LOGIN')
+    submit = SubmitField('LOGIN', render_kw={'class': "d-grid gap-2 d-md-flex justify-content-md-start"})
 
     def validate(self, extra_validators=None):
         rv = FlaskForm.validate(self)
@@ -47,7 +47,7 @@ class RegisterForm(FlaskForm):
         validators=[Length(min=8), Length(max=256), InputRequired()],
         render_kw={'placeholder': "Reenter the password"}
     )
-    submit = SubmitField('REGISTER')
+    submit = SubmitField('REGISTER', render_kw={'class': "d-grid gap-2 d-md-flex justify-content-md-start"})
 
     def validate_password2(self, password2):
         if self.password1.data != password2.data:
@@ -75,3 +75,35 @@ class ProfileForm(FlaskForm):
         render_kw={'placeholder': "Last name"}
     )
     submit = SubmitField('Save changes')
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = EmailField(
+        label="Email",
+        validators=[Email(), Length(max=128)],
+        render_kw={'placeholder': "Email"}
+    )
+
+    submit = SubmitField('REQUEST PASSWORD RESET')
+
+    def validate_email(self, email):
+        if not User.query.filter_by(email=email.data).first():
+            raise ValidationError("There is no user with that e-mail address.")
+
+
+class ResetPasswordForm(FlaskForm):
+    password1 = PasswordField(
+        label="",
+        validators=[Length(min=8), Length(max=256), InputRequired()],
+        render_kw={'placeholder': "Password"}
+    )
+    password2 = PasswordField(
+        label="",
+        validators=[Length(min=8), Length(max=256), InputRequired()],
+        render_kw={'placeholder': "Reenter the password"}
+    )
+    submit = SubmitField('RESET PASSWORD')
+
+    def validate_password2(self, password2):
+        if self.password1.data != password2.data:
+            raise ValidationError("Passwords don't match")

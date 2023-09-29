@@ -16,8 +16,9 @@
                     <div class="card-header">Account Details</div>
                     <div class="card-body">
                         <form method="post">
+                            {{ form.csrf_token() }}
                             {{ render_field(form.email, value=user.email, readonly=True) }}
-                            {% if user.first_name %}
+                            {% if user.first_name != None %}
                                 {{ render_field(form.first_name, value=user.first_name) }}
                             {% else %}
                                 {{ render_field(form.first_name, placeholder='First name') }}
