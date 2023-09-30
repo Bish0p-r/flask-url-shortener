@@ -26,7 +26,7 @@ def register():
         db.session.commit()
 
         return redirect(url_for('user.login'))
-    return render_template('user/register.html', form=form, user=user)
+    return render_template('user/register.html', form=form, user=user, title='Registration')
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -42,7 +42,7 @@ def login():
         login_user(user)
 
         return redirect(url_for('shortener.index'))
-    return render_template('user/login.html', form=form, user=user)
+    return render_template('user/login.html', form=form, user=user, title='Login')
 
 
 @bp.route('/logout', methods=['GET', 'POST'])
@@ -62,7 +62,7 @@ def profile():
         current_user.last_name = form.last_name.data
         db.session.commit()
 
-    return render_template('user/profile.html', user=current_user, form=form)
+    return render_template('user/profile.html', user=current_user, form=form, title='Profile')
 
 
 @bp.route('/reset_password', methods=['GET', 'POST'])
@@ -78,7 +78,7 @@ def reset_password_request():
         send_password_reset_email(user)
         # flash
         return redirect(url_for('user.login'))
-    return render_template('user/reset_password_request.html', user=user, form=form)
+    return render_template('user/reset_password_request.html', user=user, form=form, title='Reset password')
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -99,7 +99,7 @@ def reset_password_token(token):
         db.session.commit()
         # flash
         return redirect(url_for('user.login'))
-    return render_template('user/reset_password.html', user=current_user, form=form)
+    return render_template('user/reset_password.html', user=current_user, form=form, title='Reset password')
 
 
 @bp.route('/list_of_urls', methods=['GET', 'POST'])
@@ -109,7 +109,7 @@ def links_list():
     urls = Url.query.filter_by(user_id=current_user.id).order_by(Url.created_at.desc())
     pages = urls.paginate(page=page, per_page=10)
 
-    return render_template('user/list_of_urls.html', user=current_user, urls=urls, pages=pages)
+    return render_template('user/list_of_urls.html', user=current_user, urls=urls, pages=pages, title='List of URLS')
 
 
 @bp.route('/link_status/<id>', methods=['GET', 'POST'])

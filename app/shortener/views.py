@@ -27,7 +27,7 @@ def index():
         db.session.commit()
 
         shorted_url = url.short_url
-    return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, selected_url='index')
+    return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, title='URL Shortener')
 
 
 @bp.route('/<short_url>')
@@ -67,6 +67,6 @@ def redirect_checker():
         'shortener/redirect_checker.html',
         form=form,
         user=current_user,
-        selected_url='redirect_checker',
-        redirect_to=redirect_to
+        redirect_to=redirect_to,
+        title='Redirect checker'
     )
