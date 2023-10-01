@@ -7,7 +7,8 @@ from app.user import user_bp as bp
 from app.user.models import User
 from app.user.forms import LoginForm, RegisterForm, ProfileForm, ResetPasswordRequestForm, ResetPasswordForm
 from app import db
-from app.user.services import send_password_reset_email
+# from app.user.services import send_password_reset_email
+from app.user.tasks import send_password_reset_email
 
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -74,8 +75,8 @@ def reset_password_request():
         return redirect(url_for('shortener.index'))
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        send_password_reset_email(user)
+        # user = User.query.filter_by(email=form.email.data).first()
+        send_password_reset_email.delay(form.email.data)
         # flash
         return redirect(url_for('user.login'))
     return render_template('user/reset_password_request.html', user=user, form=form, title='Reset password')

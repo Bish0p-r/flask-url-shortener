@@ -7,6 +7,7 @@ from flask_mail import Mail
 
 from config import Config
 from app.utils import register_handlers
+from app.utils import make_celery
 
 
 db = SQLAlchemy()
@@ -29,6 +30,10 @@ def create_app(config=Config):
 
     mail.init_app(app)
 
+    from app.user.tasks import test_task, send_password_reset_email
+    celery = make_celery(app)
+    celery.conf.update(app.config)
+
     app.app_context().push()
     register_handlers(app)
 
@@ -38,4 +43,8 @@ def create_app(config=Config):
     app.register_blueprint(shortener_bp)
     app.register_blueprint(user_bp, url_prefix='/user')
 
-    return app
+    return app, celery
+
+
+app, celery = create_app()
+app.app_context().push()
