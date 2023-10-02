@@ -1,11 +1,16 @@
 from flask import flash, redirect, render_template, url_for, request
 from flask_login import login_required, logout_user, login_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import or_
 
 from app.shortener.models import Url
 from app.user import user_bp as bp
 from app.user.models import User
-from app.user.forms import LoginForm, RegisterForm, ProfileForm, ResetPasswordRequestForm, ResetPasswordForm
+from app.user.forms import (LoginForm,
+                            RegisterForm,
+                            ProfileForm,
+                            ResetPasswordRequestForm,
+                            ResetPasswordForm)
 from app import db
 # from app.user.services import send_password_reset_email
 from app.user.tasks import send_password_reset_email
@@ -75,7 +80,6 @@ def reset_password_request():
         return redirect(url_for('shortener.index'))
 
     if form.validate_on_submit():
-        # user = User.query.filter_by(email=form.email.data).first()
         send_password_reset_email.delay(form.email.data)
         # flash
         return redirect(url_for('user.login'))
@@ -107,7 +111,19 @@ def reset_password_token(token):
 @login_required
 def links_list():
     page = request.args.get('page', 1, type=int)
-    urls = Url.query.filter_by(user_id=current_user.id).order_by(Url.created_at.desc())
+    form_data = request.args.get('query')
+
+    if form_data:
+        urls = Url.query.filter_by(
+            user_id=current_user.id
+        ).filter(
+            or_(Url.original_url.ilike(f'%{form_data}%'), Url.short_url.ilike(f'%{form_data}%'))
+        ).order_by(
+            Url.created_at.desc()
+        )
+    else:
+        urls = Url.query.filter_by(user_id=current_user.id).order_by(Url.created_at.desc())
+
     pages = urls.paginate(page=page, per_page=10)
 
     return render_template('user/list_of_urls.html', user=current_user, urls=urls, pages=pages, title='List of URLS')

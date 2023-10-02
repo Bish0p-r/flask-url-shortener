@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form, render_field, render_form_row %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -10,13 +11,16 @@
         </nav>
         <hr class="mt-0 mb-4">
         <div class="card mb-4">
-            <div class="card-header">URLS</div>
+            <div class="card-header">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
+                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="query">
+                </form>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive table-billing-history">
                     <table class="table mb-0">
                         <thead>
                         <tr>
-                            <th class="border-gray-200" scope="col">ID</th>
                             <th class="border-gray-200" scope="col">Date</th>
                             <th class="border-gray-200" scope="col">Original URL</th>
                             <th class="border-gray-200" scope="col">Shorted URL</th>
@@ -28,7 +32,6 @@
                         <tbody>
                         {% for url in pages.items %}
                             <tr>
-                                <td>#{{ url.id }}</td>
                                 <td>{{ url.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                 <td><a href="{{ url.original_url }}">{{ url.original_url|truncate(44) }}</a></td>
                                 <td><a href="{{ url.short_url }}">{{ url.short_url }}</a></td>
@@ -47,7 +50,7 @@
                 </div>
             </div>
         </div>
-        {% if pages.total %}
+        {% if pages.total > 10 %}
             <nav>
                 <ul class="pagination">
                     <li class="page-item {% if not pages.has_prev %}disabled{% endif %}">
