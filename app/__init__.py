@@ -27,6 +27,7 @@ def create_app(config=Config):
     bootstrap.init_app(app)
 
     login_manager.init_app(app)
+    login_manager.login_view = 'user.login'
 
     mail.init_app(app)
 

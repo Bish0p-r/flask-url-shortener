@@ -15,9 +15,6 @@ def make_celery(app):
     celery.conf.result_backend = app.config['CELERY_RESULT_BACKEND']
     celery.conf.update(app.config)
 
-    # add beat tasks if you have them here
-    # celery.config_from_object(celery_config)
-
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
             with app.app_context():

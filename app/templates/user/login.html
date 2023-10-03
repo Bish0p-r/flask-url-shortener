@@ -3,7 +3,7 @@
 
 {% block form %}
     <form method="post">
-        {{ form.csrf_token() }}
+        {{ form.csrf_token }}
         {{ render_field(form.email) }}
         {{ render_field(form.password) }}
         <div class="row gx-3 mb-3">

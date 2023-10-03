@@ -132,8 +132,10 @@ def links_list():
 @bp.route('/link_status/<id>', methods=['GET', 'POST'])
 @login_required
 def set_link_status(id):
-    link = Url.query.filter_by(id=id).first()
-    link.active = not link.active
-    db.session.commit()
+    user = current_user
+    link = Url.query.filter_by(id=id, user_id=user.id).first()
+    if link:
+        link.active = not link.active
+        db.session.commit()
 
     return redirect(url_for('user.links_list'))
