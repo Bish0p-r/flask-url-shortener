@@ -1,0 +1,6 @@
+migrations
+__pycache__/
+.pytest_cache/
+.gitignore
+LICENSE
+README.md

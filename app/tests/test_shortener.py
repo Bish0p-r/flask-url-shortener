@@ -18,6 +18,19 @@ def test_shortener_post(client):
     assert Url.query.filter_by(original_url='https://google.com').first()
 
 
+def test_shortener_redirect(client):
+    client.post(url_for('shortener.index'), data={'url': 'https://google.com', 'submit': 'SUBMIT'})
+    url = Url.query.filter_by(original_url='https://google.com').first()
+
+    assert url.visits == 0
+
+    response = client.get(url.short_url)
+
+    assert response.status_code == 302
+    assert response.location == url.original_url
+    assert url.visits == 1
+
+
 def test_redirect_checker_get(client):
     response = client.get(url_for('shortener.redirect_checker'))
 

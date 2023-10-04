@@ -1,0 +1,43 @@
+services:
+  redis:
+    image: redis
+    restart: always
+
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: db
+    env_file:
+      - .env
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+
+  web-app:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    command: >
+      sh -c "flask db init && flask db stamp head && flask db migrate && flask db upgrade && flask run --host=0.0.0.0"
+    container_name: web-app
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+
+  worker:
+    restart: always
+    build:
+      context: .
+    volumes:
+      - ./celerydata:/app/src/celerydata
+    command: celery -A app.celery worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+      - web-app
+
+volumes:
+  pgdbdata:

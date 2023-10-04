@@ -12,7 +12,6 @@ from app.user.forms import (LoginForm,
                             ResetPasswordRequestForm,
                             ResetPasswordForm)
 from app import db
-# from app.user.services import send_password_reset_email
 from app.user.tasks import send_password_reset_email
 
 
@@ -81,7 +80,8 @@ def reset_password_request():
 
     if form.validate_on_submit():
         send_password_reset_email.delay(form.email.data)
-        # flash
+        flash('Check your email for the instructions to reset your password.', category='success')
+
         return redirect(url_for('user.login'))
     return render_template('user/reset_password_request.html', user=user, form=form, title='Reset password')
 
@@ -95,14 +95,17 @@ def reset_password_token(token):
 
     user = User.verify_reset_token(token)
     if user is None:
-        # flash
+        flash('Invalid or expired token', category='danger')
+
         return redirect(url_for('user.reset_password_request'))
 
     if form.validate_on_submit():
         hash_password = generate_password_hash(form.password2.data)
         user.password = hash_password
+
         db.session.commit()
-        # flash
+        flash('Your password has been updated!', category='success')
+
         return redirect(url_for('user.login'))
     return render_template('user/reset_password.html', user=current_user, form=form, title='Reset password')
 

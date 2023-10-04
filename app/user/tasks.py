@@ -19,7 +19,6 @@ def send_password_reset_email(email):
     user = User.query.filter_by(email=email).first()
     token = user.get_reset_token()
     url = f"{host}/user/reset_password/{token}"
-    # url = url_for('user.reset_password_token', token=token, _external=True)
 
     message = Message(
         'Password reset',
