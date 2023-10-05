@@ -15,7 +15,6 @@ def test_task(a, b):
 
 @shared_task()
 def send_password_reset_email(email):
-    print(email)
     user = User.query.filter_by(email=email).first()
     token = user.get_reset_token()
     url = f"{host}/user/reset_password/{token}"
