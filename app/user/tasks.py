@@ -19,9 +19,7 @@ def send_password_reset_email(email):
     url = f"{host}/user/reset_password/{token}"
 
     message = Message(
-        'Password reset',
-        sender=Config.MAIL_USERNAME,
-        recipients=[user.email]
+        "Password reset", sender=Config.MAIL_USERNAME, recipients=[user.email]
     )
 
     message.body = f"Click on the link below to change your password:\n\n{url}"

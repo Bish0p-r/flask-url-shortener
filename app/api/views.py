@@ -4,24 +4,22 @@ from werkzeug.exceptions import BadRequest
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
-from app.api.api_models import (url_shortener_input_model,
-                                url_shortener_model,
-                                login_model,
-                                user_model,
-                                register_model,
-                                user_profile_model,
-                                user_profile_patch_model,
-                                url_shortener_patch_model,)
+from app.api.api_models import (
+    url_shortener_input_model,
+    url_shortener_model,
+    login_model,
+    user_model,
+    register_model,
+    user_profile_model,
+    user_profile_patch_model,
+    url_shortener_patch_model,
+)
 from app.shortener.models import Url
 from app.user.models import User
 
 
 authorizations = {
-    "jsonWebToken": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-    }
+    "jsonWebToken": {"type": "apiKey", "in": "header", "name": "Authorization"}
 }
 
 ns = Namespace("url_shortener", authorizations=authorizations)
@@ -51,18 +49,19 @@ class UrlShortener(Resource):
 
 @ns_auth.route("/register")
 class Register(Resource):
-
     @ns_auth.expect(register_model)
     @ns_auth.marshal_with(user_model)
     def post(self):
-
         if User.query.filter_by(email=ns.payload["email"]).first():
             raise BadRequest("User already exists")
 
         if ns.payload["password1"] != ns.payload["password2"]:
             raise BadRequest("Passwords don't match")
 
-        user = User(email=ns.payload["email"], password=generate_password_hash(ns.payload["password1"]))
+        user = User(
+            email=ns.payload["email"],
+            password=generate_password_hash(ns.payload["password1"]),
+        )
 
         db.session.add(user)
         db.session.commit()
@@ -72,7 +71,6 @@ class Register(Resource):
 
 @ns_auth.route("/login")
 class Login(Resource):
-
     @ns_auth.expect(login_model)
     def post(self):
         user = User.query.filter_by(email=ns.payload["email"]).first()
@@ -112,12 +110,18 @@ class ListOfUrls(Resource):
 
     @ns_user.marshal_list_with(url_shortener_model)
     def get(self):
-        return Url.query.filter_by(user_id=current_user.id).order_by(Url.created_at.desc()).all()
+        return (
+            Url.query.filter_by(user_id=current_user.id)
+            .order_by(Url.created_at.desc())
+            .all()
+        )
 
     @ns_user.expect(url_shortener_patch_model)
     @ns_user.marshal_with(url_shortener_model)
     def patch(self):
-        url = Url.query.filter_by(original_url=ns.payload["short_url"], user_id=current_user.id).first()
+        url = Url.query.filter_by(
+            original_url=ns.payload["short_url"], user_id=current_user.id
+        ).first()
 
         if not url:
             return {"error": "URL not found"}, 404
@@ -126,4 +130,3 @@ class ListOfUrls(Resource):
         db.session.commit()
 
         return url, 200
-

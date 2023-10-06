@@ -10,14 +10,16 @@ class LoginForm(FlaskForm):
     email = EmailField(
         label="",
         validators=[Email(), Length(max=128), InputRequired()],
-        render_kw={'placeholder': "Email"}
+        render_kw={"placeholder": "Email"},
     )
     password = PasswordField(
         label="",
         validators=[Length(max=256), InputRequired()],
-        render_kw={'placeholder': "Password"}
+        render_kw={"placeholder": "Password"},
     )
-    submit = SubmitField('LOGIN', render_kw={'class': "d-grid gap-2 d-md-flex justify-content-md-start"})
+    submit = SubmitField(
+        "LOGIN", render_kw={"class": "d-grid gap-2 d-md-flex justify-content-md-start"}
+    )
 
     def validate(self, extra_validators=None):
         rv = FlaskForm.validate(self)
@@ -35,19 +37,22 @@ class RegisterForm(FlaskForm):
     email = EmailField(
         label="",
         validators=[Email(), Length(max=128), InputRequired()],
-        render_kw={'placeholder': "Email"}
+        render_kw={"placeholder": "Email"},
     )
     password1 = PasswordField(
         label="",
         validators=[Length(min=8), Length(max=256), InputRequired()],
-        render_kw={'placeholder': "Password"}
+        render_kw={"placeholder": "Password"},
     )
     password2 = PasswordField(
         label="",
         validators=[Length(min=8), Length(max=256), InputRequired()],
-        render_kw={'placeholder': "Reenter the password"}
+        render_kw={"placeholder": "Reenter the password"},
     )
-    submit = SubmitField('REGISTER', render_kw={'class': "d-grid gap-2 d-md-flex justify-content-md-start"})
+    submit = SubmitField(
+        "REGISTER",
+        render_kw={"class": "d-grid gap-2 d-md-flex justify-content-md-start"},
+    )
 
     def validate_password2(self, password2):
         if self.password1.data != password2.data:
@@ -62,29 +67,29 @@ class ProfileForm(FlaskForm):
     email = EmailField(
         label="Email",
         validators=[Email(), Length(max=128)],
-        render_kw={'placeholder': "Email"}
+        render_kw={"placeholder": "Email"},
     )
     first_name = StringField(
         label="First name",
         validators=[Length(max=64)],
-        render_kw={'placeholder': "First name"}
+        render_kw={"placeholder": "First name"},
     )
     last_name = StringField(
         label="Last name",
         validators=[Length(max=64)],
-        render_kw={'placeholder': "Last name"}
+        render_kw={"placeholder": "Last name"},
     )
-    submit = SubmitField('Save changes')
+    submit = SubmitField("Save changes")
 
 
 class ResetPasswordRequestForm(FlaskForm):
     email = EmailField(
         label="Email",
         validators=[Email(), Length(max=128)],
-        render_kw={'placeholder': "Email"}
+        render_kw={"placeholder": "Email"},
     )
 
-    submit = SubmitField('REQUEST PASSWORD RESET')
+    submit = SubmitField("REQUEST PASSWORD RESET")
 
     def validate_email(self, email):
         if not User.query.filter_by(email=email.data).first():
@@ -95,14 +100,14 @@ class ResetPasswordForm(FlaskForm):
     password1 = PasswordField(
         label="",
         validators=[Length(min=8), Length(max=256), InputRequired()],
-        render_kw={'placeholder': "Password"}
+        render_kw={"placeholder": "Password"},
     )
     password2 = PasswordField(
         label="",
         validators=[Length(min=8), Length(max=256), InputRequired()],
-        render_kw={'placeholder': "Reenter the password"}
+        render_kw={"placeholder": "Reenter the password"},
     )
-    submit = SubmitField('RESET PASSWORD')
+    submit = SubmitField("RESET PASSWORD")
 
     def validate_password2(self, password2):
         if self.password1.data != password2.data:

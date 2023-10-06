@@ -8,7 +8,7 @@ from config import Config
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), unique=True)
@@ -23,12 +23,8 @@ class User(db.Model, UserMixin):
         issued_at = datetime.now()
         expires_at = issued_at + expires_in
 
-        header = {'alg': 'HS256', 'typ': 'JWT'}
-        payload = {
-            'user_id': self.id,
-            'exp': expires_at.timestamp(),
-            'iat': issued_at
-        }
+        header = {"alg": "HS256", "typ": "JWT"}
+        payload = {"user_id": self.id, "exp": expires_at.timestamp(), "iat": issued_at}
         token = jwt.encode(header, payload, secret_key)
 
         return token
@@ -37,11 +33,11 @@ class User(db.Model, UserMixin):
     def verify_reset_token(token):
         try:
             decoded_payload = jwt.decode(token, Config.SECRET_KEY)
-            expires_at = datetime.fromtimestamp(decoded_payload['exp'])
+            expires_at = datetime.fromtimestamp(decoded_payload["exp"])
 
             if expires_at <= datetime.now():
                 return None
-            return User.query.get(decoded_payload['user_id'])
+            return User.query.get(decoded_payload["user_id"])
 
         except:
             return None

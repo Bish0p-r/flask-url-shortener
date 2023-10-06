@@ -21,7 +21,7 @@ def create_app(config=Config):
     bootstrap.init_app(app)
 
     login_manager.init_app(app)
-    login_manager.login_view = 'user.login'
+    login_manager.login_view = "user.login"
 
     mail.init_app(app)
 
@@ -38,7 +38,7 @@ def create_app(config=Config):
     from app.extensions import api_bp
 
     app.register_blueprint(shortener_bp)
-    app.register_blueprint(user_bp, url_prefix='/user')
+    app.register_blueprint(user_bp, url_prefix="/user")
     app.register_blueprint(api_bp)
 
     @jwt.user_identity_loader

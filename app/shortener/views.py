@@ -10,7 +10,7 @@ from app import db
 from config import host
 
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route("/", methods=["GET", "POST"])
 def index():
     form = UrlForm()
     user = current_user
@@ -27,12 +27,18 @@ def index():
         db.session.commit()
 
         shorted_url = url.short_url
-    return render_template('shortener/index.html', form=form, shorted_url=shorted_url, user=user, title='URL Shortener')
+    return render_template(
+        "shortener/index.html",
+        form=form,
+        shorted_url=shorted_url,
+        user=user,
+        title="URL Shortener",
+    )
 
 
-@bp.route('/<short_url>')
+@bp.route("/<short_url>")
 def url_redirect(short_url):
-    short_url = host + '/' + short_url
+    short_url = host + "/" + short_url
     url = Url.query.filter_by(short_url=short_url, active=True).first()
 
     if url:
@@ -43,7 +49,7 @@ def url_redirect(short_url):
     abort(404)
 
 
-@bp.route('/redirect_checker', methods=['GET', 'POST'])
+@bp.route("/redirect_checker", methods=["GET", "POST"])
 def redirect_checker():
     form = UrlForm()
     redirect_to = None
@@ -64,9 +70,9 @@ def redirect_checker():
                 redirect_to = url
 
     return render_template(
-        'shortener/redirect_checker.html',
+        "shortener/redirect_checker.html",
         form=form,
         user=current_user,
         redirect_to=redirect_to,
-        title='Redirect checker'
+        title="Redirect checker",
     )

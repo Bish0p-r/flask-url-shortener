@@ -29,7 +29,7 @@ def app():
 
 @pytest.fixture()
 def user(app):
-    user = User(email='user@mail.com', password='passworduser')
+    user = User(email="user@mail.com", password="passworduser")
     db.session.add(user)
     db.session.commit()
 
@@ -39,5 +39,3 @@ def user(app):
 @pytest.fixture()
 def client(app):
     return app.test_client()
-
-
