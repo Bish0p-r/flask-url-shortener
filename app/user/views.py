@@ -1,6 +1,6 @@
 from flask import flash, redirect, render_template, url_for, request
 from flask_login import login_required, logout_user, login_user, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 from sqlalchemy import or_
 
 from app.shortener.models import Url

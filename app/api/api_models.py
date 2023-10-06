@@ -12,7 +12,7 @@ url_shortener_model = api.model("Url", {
 })
 
 
-url_shortener_input_model = api.model("Url", {
+url_shortener_input_model = api.model("UrlInput", {
     "original_url": fields.String(required=True, description="The original URL")
 })
 

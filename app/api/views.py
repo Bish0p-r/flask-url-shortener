@@ -1,5 +1,6 @@
 from flask_jwt_extended import create_access_token, jwt_required, current_user
 from flask_restx import Resource, Namespace
+from werkzeug.exceptions import BadRequest
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
@@ -28,12 +29,6 @@ ns_auth = Namespace("auth", authorizations=authorizations)
 ns_user = Namespace("user", authorizations=authorizations)
 
 
-@ns.route("/hello")
-class Hello(Resource):
-    def get(self):
-        return {"hello": "restx"}
-
-
 @ns.route("/")
 class UrlShortener(Resource):
     method_decorators = [jwt_required(optional=True)]
@@ -50,6 +45,7 @@ class UrlShortener(Resource):
 
         db.session.add(url)
         db.session.commit()
+
         return url, 201
 
 
@@ -61,10 +57,10 @@ class Register(Resource):
     def post(self):
 
         if User.query.filter_by(email=ns.payload["email"]).first():
-            return {"error": "User already exists"}, 400
+            raise BadRequest("User already exists")
 
         if ns.payload["password1"] != ns.payload["password2"]:
-            return {"error": "Passwords don't match"}, 400
+            raise BadRequest("Passwords don't match")
 
         user = User(email=ns.payload["email"], password=generate_password_hash(ns.payload["password1"]))
 
@@ -81,11 +77,8 @@ class Login(Resource):
     def post(self):
         user = User.query.filter_by(email=ns.payload["email"]).first()
 
-        if not user:
-            return {"error": "User does not exist"}, 401
-
-        if not check_password_hash(user.password, ns.payload["password"]):
-            return {"error": "Incorrect password"}, 401
+        if not user or not check_password_hash(user.password, ns.payload["password"]):
+            raise BadRequest("Invalid email or password")
 
         return {"access_token": create_access_token(user)}
 

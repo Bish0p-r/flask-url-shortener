@@ -161,3 +161,4 @@ cython_debug/
 /.idea/.gitignore
 /migrations/
 /pytest.ini
+/pyproject.toml

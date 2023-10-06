@@ -1,6 +1,6 @@
 import requests
 
-from flask import flash, redirect, render_template, url_for, abort
+from flask import redirect, render_template, abort
 from flask_login import current_user
 
 from app.shortener import shortener_bp as bp
