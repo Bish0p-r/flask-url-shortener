@@ -1,10 +1,10 @@
-<h1>📃 Description</h1>
+<h1>Description</h1>
 
 Flask URL Shortener is a pet project built using Flask.
 It provides a simple and efficient way to shorten long URLs into shorter, more manageable ones.
 
 
-<h1>🔥 Features</h1>
+<h1>Features</h1>
 
 * **Shortening long urls**
 * **Managing short links**
@@ -14,7 +14,7 @@ It provides a simple and efficient way to shorten long URLs into shorter, more m
 
 
 
-<h1>🔧 Tech stack</h1>
+<h1>Tech stack</h1>
 
 * **Python 3.11**
 * **Flask**
@@ -26,7 +26,7 @@ It provides a simple and efficient way to shorten long URLs into shorter, more m
 * **Docker + docker-compose**
 
 
-<h1>💿 Installation</h1>
+<h1>Installation</h1>
 
 1. **Clone repository.**
 ```bash
